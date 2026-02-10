@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+# ==================== AI 模型配置 ====================
+# 请根据实际 API 服务修改以下配置
+ai:
+  # API 密钥
+  api-key: xxx
+  # API 基础地址
+  base-url: https://xxx
+  # Chat Completions 接口路径
+  completions-path: xxx
+  # 模型名称 (请确保使用支持 Chat Completions 的模型)
+  model-name: xxx
+  # 温度参数 (0-1, 越高越随机)
+  temperature: 0.2
+  # 最大生成 Token 数
+  max-tokens: 2048
+  # 系统提示词
+  system-prompt: >-
+    你是一个有用的AI助手。你可以回答各种问题，并使用提供的工具获取实时信息。
+    如果用户询问当前时间或日期，请使用 getCurrentDateTime 工具。
+    如果用户询问天气情况，请使用 getWeather 工具。
+    请用中文回答用户的问题。
