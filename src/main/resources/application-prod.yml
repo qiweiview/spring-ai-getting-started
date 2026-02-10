@@ -1,0 +1,10 @@
+# ==================== 生产环境 AI 模型配置 ====================
+ai:
+  # API 密钥
+  api-key: xxx
+  # API 基础地址
+  base-url: https://xxx
+  # Chat Completions 接口路径
+  completions-path: xxx
+  # 模型名称 (请确保使用支持 Chat Completions 的模型)
+  model-name: xxx

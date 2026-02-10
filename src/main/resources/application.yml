@@ -1,17 +1,12 @@
+spring:
+  profiles:
+    active: test
+
 server:
   port: 8080
 
-# ==================== AI 模型配置 ====================
-# 请根据实际 API 服务修改以下配置
+# ==================== AI 模型公共配置 ====================
 ai:
-  # API 密钥
-  api-key: xxx
-  # API 基础地址
-  base-url: https://xxx
-  # Chat Completions 接口路径
-  completions-path: xxx
-  # 模型名称 (请确保使用支持 Chat Completions 的模型)
-  model-name: xxx
   # 温度参数 (0-1, 越高越随机)
   temperature: 0.2
   # 最大生成 Token 数
