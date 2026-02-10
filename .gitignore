@@ -34,4 +34,4 @@ build/
 /.mvn/
 /mvnw
 /mvnw.cmd
-/src/main/resources/application-test.yml
+/src/main/resources/config/application-test.yml
