@@ -2,6 +2,8 @@
 
 基于 **Spring Boot 3.4** + **Spring AI 1.1** 的 AI 对话演示项目，支持 SSE 流式输出和 Function Calling（工具调用）。
 
+![预览](src/main/resources/static/preview.png)
+
 ---
 
 ## 快速开始
