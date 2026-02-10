@@ -1341,7 +1341,7 @@
         addAiMessage();
 
         // Create EventSource for SSE
-        const url = '/chat/stream?message=' + encodeURIComponent(message);
+        const url = 'chat/stream?message=' + encodeURIComponent(message);
         eventSource = new EventSource(url);
 
         // AI text tokens → left panel
@@ -1674,7 +1674,7 @@
      * 页面加载时检查鉴权状态
      */
     function checkAuth() {
-        fetch('/auth/check')
+        fetch('auth/check')
             .then(res => res.json())
             .then(data => {
                 if (data.authenticated) {
@@ -1710,7 +1710,7 @@
         btn.disabled = true;
         btn.textContent = '验证中...';
 
-        fetch('/auth/verify', {
+        fetch('auth/verify', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ password: password })
