@@ -3,7 +3,7 @@ spring:
     active: prod
 
 server:
-  port: 8080
+  port: 10899
 
 # ==================== AI 模型公共配置 ====================
 ai:

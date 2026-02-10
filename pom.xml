@@ -107,6 +107,7 @@
     </dependencyManagement>
 
     <build>
+        <finalName>spring-ai-getting-started</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
