@@ -849,6 +849,203 @@
             width: 14px; height: 14px;
         }
 
+        /* ==================== Auth Overlay ==================== */
+        .auth-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.35s ease;
+        }
+
+        .auth-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .auth-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-xl);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+            padding: 40px 36px 32px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            transform: translateY(0) scale(1);
+            transition: transform 0.35s ease;
+        }
+
+        .auth-overlay.hidden .auth-card {
+            transform: translateY(20px) scale(0.95);
+        }
+
+        .auth-card-icon {
+            width: 56px; height: 56px;
+            background: var(--primary-light);
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center; justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .auth-card-icon svg {
+            width: 26px; height: 26px;
+            color: var(--primary);
+        }
+
+        .auth-card h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .auth-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .auth-input-group {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            background: var(--bg);
+            color: var(--text-primary);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .auth-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(28, 100, 242, 0.1);
+        }
+
+        .auth-input.error {
+            border-color: #EF4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .auth-error-msg {
+            font-size: 12px;
+            color: #EF4444;
+            margin-top: 8px;
+            margin-bottom: 4px;
+            display: none;
+            text-align: left;
+        }
+
+        .auth-error-msg.visible {
+            display: block;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 500;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .auth-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .auth-btn:disabled {
+            background: var(--border);
+            cursor: not-allowed;
+        }
+
+        /* ==================== Block Mask (验证失败遮罩) ==================== */
+        .block-mask {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .block-mask.active {
+            display: flex;
+        }
+
+        .block-mask-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-xl);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            padding: 48px 36px;
+            text-align: center;
+            max-width: 380px;
+            width: 90%;
+        }
+
+        .block-mask-icon {
+            width: 64px; height: 64px;
+            background: #FEF2F2;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center; justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .block-mask-icon svg {
+            width: 30px; height: 30px;
+            color: #EF4444;
+        }
+
+        .block-mask-card h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .block-mask-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .block-mask-retry {
+            margin-top: 20px;
+            padding: 10px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 13px;
+            font-weight: 500;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .block-mask-retry:hover {
+            background: var(--primary-hover);
+        }
+
         /* ==================== Responsive ==================== */
         @media (max-width: 1024px) {
             .process-panel { width: 340px; }
@@ -863,6 +1060,44 @@
     </style>
 </head>
 <body>
+
+<!-- ===== 鉴权弹窗 ===== -->
+<div class="auth-overlay" id="authOverlay">
+    <div class="auth-card">
+        <div class="auth-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+        </div>
+        <h2>访问验证</h2>
+        <p>请输入访问密码以继续使用</p>
+        <div class="auth-input-group">
+            <input type="password" class="auth-input" id="authInput"
+                   placeholder="请输入验证密码"
+                   onkeydown="handleAuthKeyDown(event)"
+                   autocomplete="off" />
+            <div class="auth-error-msg" id="authErrorMsg">密码错误，请联系管理员</div>
+        </div>
+        <button class="auth-btn" id="authBtn" onclick="submitAuth()">验 证</button>
+    </div>
+</div>
+
+<!-- ===== 验证失败遮罩 ===== -->
+<div class="block-mask" id="blockMask">
+    <div class="block-mask-card">
+        <div class="block-mask-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+        </div>
+        <h2>访问受限</h2>
+        <p>请联系管理员获取访问权限</p>
+        <button class="block-mask-retry" onclick="showAuthDialog()">重新验证</button>
+    </div>
+</div>
 
 <div class="header">
     <div class="header-left">
@@ -1431,8 +1666,140 @@
         });
     }
 
-    // Focus input on page load
-    messageInput.focus();
+    // ==================== Authentication ====================
+    let authFailCount = 0;
+    const MAX_AUTH_FAIL = 5; // 连续失败5次后显示遮罩
+
+    /**
+     * 页面加载时检查鉴权状态
+     */
+    function checkAuth() {
+        fetch('/auth/check')
+            .then(res => res.json())
+            .then(data => {
+                if (data.authenticated) {
+                    // 已鉴权，隐藏弹窗
+                    hideAuthDialog();
+                    messageInput.focus();
+                } else {
+                    // 未鉴权，显示弹窗
+                    showAuthDialog();
+                }
+            })
+            .catch(() => {
+                showAuthDialog();
+            });
+    }
+
+    /**
+     * 提交验证密码
+     */
+    function submitAuth() {
+        const input = document.getElementById('authInput');
+        const errorMsg = document.getElementById('authErrorMsg');
+        const btn = document.getElementById('authBtn');
+        const password = input.value.trim();
+
+        if (!password) {
+            input.classList.add('error');
+            errorMsg.textContent = '请输入密码';
+            errorMsg.classList.add('visible');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = '验证中...';
+
+        fetch('/auth/verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: password })
+        })
+        .then(res => res.json())
+        .then(data => {
+            btn.disabled = false;
+            btn.textContent = '验 证';
+
+            if (data.success) {
+                authFailCount = 0;
+                hideAuthDialog();
+                messageInput.focus();
+            } else {
+                authFailCount++;
+                input.classList.add('error');
+                errorMsg.textContent = data.message || '密码错误，请联系管理员';
+                errorMsg.classList.add('visible');
+                input.value = '';
+                input.focus();
+
+                // 连续失败次数过多，显示遮罩
+                if (authFailCount >= MAX_AUTH_FAIL) {
+                    showBlockMask();
+                }
+            }
+        })
+        .catch(() => {
+            btn.disabled = false;
+            btn.textContent = '验 证';
+            input.classList.add('error');
+            errorMsg.textContent = '网络错误，请稍后重试';
+            errorMsg.classList.add('visible');
+        });
+    }
+
+    function handleAuthKeyDown(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            submitAuth();
+        }
+        // 输入时清除错误样式
+        const input = document.getElementById('authInput');
+        const errorMsg = document.getElementById('authErrorMsg');
+        input.classList.remove('error');
+        errorMsg.classList.remove('visible');
+    }
+
+    function showAuthDialog() {
+        const overlay = document.getElementById('authOverlay');
+        const blockMask = document.getElementById('blockMask');
+        blockMask.classList.remove('active');
+        overlay.classList.remove('hidden');
+        // 重置状态
+        document.getElementById('authInput').value = '';
+        document.getElementById('authInput').classList.remove('error');
+        document.getElementById('authErrorMsg').classList.remove('visible');
+        setTimeout(() => document.getElementById('authInput').focus(), 100);
+    }
+
+    function hideAuthDialog() {
+        const overlay = document.getElementById('authOverlay');
+        overlay.classList.add('hidden');
+    }
+
+    function showBlockMask() {
+        const overlay = document.getElementById('authOverlay');
+        const blockMask = document.getElementById('blockMask');
+        overlay.classList.add('hidden');
+        blockMask.classList.add('active');
+    }
+
+    // 定时检查鉴权是否过期 (每分钟检查一次)
+    setInterval(function() {
+        const overlay = document.getElementById('authOverlay');
+        if (overlay.classList.contains('hidden')) {
+            // 当前已通过鉴权，检查是否过期
+            fetch('/auth/check')
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.authenticated) {
+                        showAuthDialog();
+                    }
+                });
+        }
+    }, 60 * 1000);
+
+    // 页面加载时执行鉴权检查
+    checkAuth();
 </script>
 
 </body>

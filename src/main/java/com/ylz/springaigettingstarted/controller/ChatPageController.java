@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ylz.springaigettingstarted.config.ChatModelConfig;
 import com.ylz.springaigettingstarted.tools.AITools;
 import com.ylz.springaigettingstarted.utils.SSEUtils;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.openai.OpenAiChatModel;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.LinkedHashMap;
@@ -31,11 +31,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * - "process"  处理流程事件 (JSON) → 右侧面板展示模型加载、提示词组合、工具调用等
  * - "message"  AI回复文本Token     → 左侧对话面板流式展示
  * - "close"    对话完成信号         → 前端关闭SSE连接
+ *
+ * 简单鉴权:
+ * - 用户首次访问页面需输入固定密码验证
+ * - 验证通过后有效期10分钟，期间无需重复输入
  */
 @Controller
 public class ChatPageController {
 
     private static final long SSE_TIMEOUT = 10 * 60 * 1000L; // 10分钟
+    private static final long AUTH_EXPIRE_MS = 10 * 60 * 1000L; // 鉴权有效期10分钟
+    private static final String SESSION_AUTH_TIME = "auth_time"; // Session中存储鉴权时间的key
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private final OpenAiChatModel chatModel;
@@ -46,6 +52,60 @@ public class ChatPageController {
         this.chatModel = chatModel;
         this.chatModelConfig = chatModelConfig;
     }
+
+    // ==================== 鉴权相关接口 ====================
+
+    /**
+     * 检查当前会话的鉴权状态
+     *
+     * @return {"authenticated": true/false}
+     */
+    @GetMapping("/auth/check")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> checkAuth(HttpSession session) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("authenticated", isAuthenticated(session));
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * 验证密码
+     *
+     * @param body 请求体，包含 password 字段
+     * @return {"success": true/false, "message": "..."}
+     */
+    @PostMapping("/auth/verify")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> verifyPassword(@RequestBody Map<String, String> body,
+                                                               HttpSession session) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        String password = body.get("password");
+
+        if (password != null && password.equals(chatModelConfig.getAuthPassword())) {
+            // 验证通过，记录鉴权时间
+            session.setAttribute(SESSION_AUTH_TIME, System.currentTimeMillis());
+            result.put("success", true);
+            result.put("message", "验证通过");
+        } else {
+            result.put("success", false);
+            result.put("message", "密码错误，请联系管理员获取正确密码");
+        }
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * 判断当前会话是否已鉴权且未过期
+     */
+    private boolean isAuthenticated(HttpSession session) {
+        Object authTimeObj = session.getAttribute(SESSION_AUTH_TIME);
+        if (authTimeObj == null) {
+            return false;
+        }
+        long authTime = (Long) authTimeObj;
+        return (System.currentTimeMillis() - authTime) < AUTH_EXPIRE_MS;
+    }
+
+    // ==================== 页面与对话接口 ====================
 
     /**
      * 渲染对话页面
@@ -63,7 +123,21 @@ public class ChatPageController {
      */
     @GetMapping("/chat/stream")
     @ResponseBody
-    public SseEmitter chatStream(@RequestParam String message) {
+    public SseEmitter chatStream(@RequestParam String message, HttpSession session) {
+        // 鉴权检查：未通过则直接返回错误事件
+        if (!isAuthenticated(session)) {
+            SseEmitter errorEmitter = new SseEmitter(5000L);
+            executor.execute(() -> {
+                try {
+                    SSEUtils.error(errorEmitter, "未授权访问，请先验证密码");
+                    SSEUtils.complete(errorEmitter);
+                } catch (Exception e) {
+                    // 忽略
+                }
+            });
+            return errorEmitter;
+        }
+
         SseEmitter emitter = new SseEmitter(SSE_TIMEOUT);
         AtomicBoolean active = new AtomicBoolean(true);
 

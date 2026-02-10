@@ -17,3 +17,5 @@ ai:
     如果用户询问当前时间或日期，请使用 getCurrentDateTime 工具。
     如果用户询问天气情况，请使用 getWeather 工具。
     请用中文回答用户的问题。
+  # 页面访问密码 (验证通过后有效期10分钟)
+  auth-password: helloview888

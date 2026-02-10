@@ -41,6 +41,9 @@ public class ChatModelConfig {
     /** 系统提示词 */
     private String systemPrompt;
 
+    /** 页面访问密码 */
+    private String authPassword;
+
     // ==================== Getter / Setter ====================
 
     public String getApiKey() {
@@ -97,6 +100,14 @@ public class ChatModelConfig {
 
     public void setSystemPrompt(String systemPrompt) {
         this.systemPrompt = systemPrompt;
+    }
+
+    public String getAuthPassword() {
+        return authPassword;
+    }
+
+    public void setAuthPassword(String authPassword) {
+        this.authPassword = authPassword;
     }
 
     // ==================== Bean 定义 ====================
