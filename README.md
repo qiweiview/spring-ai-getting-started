@@ -1,4 +1,4 @@
-# Spring AI Getting Started
+# Spring AI 入门实战
 
 基于 **Spring Boot 3.4** + **Spring AI 1.1** 的 AI 对话演示项目，支持 SSE 流式输出和 Function Calling（工具调用）。
 
@@ -20,7 +20,7 @@ cd spring-ai-getting-started
 
 ### 2. 配置 AI 模型参数
 
-打开 `src/main/resources/application.yml`，修改 `ai` 下的配置项：
+打开 `src/main/resources/application-prod.yml`，修改 `ai` 下的配置项：
 
 ```yaml
 ai:
@@ -35,19 +35,6 @@ ai:
 
   # 模型名称 —— 请确保使用支持 Chat Completions 的模型
   model-name: gpt-4o
-
-  # 温度参数 (0~1) —— 越高回答越随机/有创意，越低回答越确定/稳定
-  temperature: 0.7
-
-  # 最大生成 Token 数 —— 控制单次回复的最大长度
-  max-tokens: 2048
-
-  # 系统提示词 —— 定义 AI 的角色和行为
-  system-prompt: >-
-    你是一个有用的AI助手。你可以回答各种问题，并使用提供的工具获取实时信息。
-    如果用户询问当前时间或日期，请使用 getCurrentDateTime 工具。
-    如果用户询问天气情况，请使用 getWeather 工具。
-    请用中文回答用户的问题。
 ```
 
 #### 配置项说明
